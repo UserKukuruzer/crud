@@ -1,0 +1,73 @@
+version: '3.5'
+
+
+services:
+  db:
+#  postgres:
+#    container_name: 57f16a1c4db3c550305487360a3863e21fa99a658d22c01289d28b8277fae6a9
+    image: postgres
+    container_name: postgres_con
+    environment:
+      DATABASE_HOST: 127.0.0.1
+      POSTGRES_DB: 'one_table'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '78981232'
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+#    ports:
+#      - '5555'
+    networks:
+      net:
+        ipv4_address: "192.168.20.5"
+    restart: always
+#
+#  pgadmin:
+##    container_name: 7288cf27575bac7b330174497847a5462a4b247cb7336dcfa7993de37d1e9f08
+#    container_name: pgadmin_con
+#    image: 'dpage/pgadmin4'
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-myemail@mail.com}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-78981232}
+#    volumes:
+#      - pgadmin:/root/.pgadmin
+##    ports:
+##      - "5050:80"
+##    networks:
+##      postgres:
+##        ipv4_address: "10.5.0.3"
+#    restart: unless-stopped
+#
+  main:
+    build:
+      context: main
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    container_name: main_con
+    command: npm run dev
+
+
+#  main:
+#    container_name: main_container
+#    build: ./main
+#    ports:
+#      - "5000:5000"
+    networks:
+      net:
+        ipv4_address: "192.168.20.2"
+    restart: unless-stopped
+#
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.20.0/10
+#
+volumes:
+  db:
+#  pgadmin:
+  main:
